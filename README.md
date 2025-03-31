@@ -14,20 +14,29 @@ Sample Pub Sub of sensor data to InfluxDB and Telegraf stack using Zenoh Python 
     code zenoh_influxdb_telegraf
     ```
 
-2. Check the InfluxDB config parameters in ```config\setup_influxdb.sh```. NB if you edit the token then remember to copy the new token value to lines 30 and 54 of ```config\zenoh_config.json5```.
-
-3. Reopen in Container
-
+2. Reopen in Container
 
     https://github.com/user-attachments/assets/8d09056a-3790-4e9a-9226-dc3e4273d62a
 
 
-4. Open new terminal in the Devcontainer and setup InfluxDB
+3. Open new terminal in the Devcontainer and setup InfluxDB. NB if you edit the token then remember to copy the new token value to lines 30 and 50 of ```config\zenoh_config.json5```.
     ```sh
-    /bin/bash config/setup_influxdb.sh
+    export INFLUXDB_USERNAME=ecmpg
+    export INFLUXDB_PASSWORD=ecmpg1234
+    export INFLUXDB_CONFIG_NAME=ecmpg
+    export INFLUXDB_ORG=ecmpg
+    export INFLUXDB_API_TOKEN='_djIO2Eq4Nukcv6iTD9zUzlirSv38f1IWRt85TFifWHtrYOJe8DI4tDr5m9dOiSwL3wPfyYMPoyUN3hDuMdDvw=='
+    export INFLUXDB_BUCKET_NAME=zenoh_example
+
+    influx setup --username $INFLUXDB_USERNAME \
+        --password $INFLUXDB_PASSWORD \
+        --token $INFLUXDB_API_TOKEN \
+        --org $INFLUXDB_ORG \
+        --bucket $INFLUXDB_BUCKET_NAME \
+        --force
     ```
 
-5. Run Zenoh router on from the Devcontainer terminal
+4. Run Zenoh router on from the Devcontainer terminal
     ```sh
     zenohd -c config/zenoh_config.json5
     ```
