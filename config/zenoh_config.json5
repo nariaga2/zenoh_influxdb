@@ -1,0 +1,68 @@
+/// From template: https://github.com/eclipse-zenoh/zenoh/blob/release/1.1.1/DEFAULT_CONFIG.json5
+{  
+  /// The node's mode (router, peer or client)
+  mode: "router",  
+  /// The node's metadata (name, location, DNS name, etc.) Arbitrary JSON data not interpreted by zenoh and available in admin space @/<zid>/router, @/<zid>/peer or @/<zid>/client
+  metadata: { name: "influxdb_server", location: "LWC Workshop" },
+
+  /// Which endpoints to connect to. E.g. tcp/localhost:7447.
+  /// By configuring the endpoints, it is possible to tell zenoh which router/peer to connect to at startup.
+  connect: {
+    /// See https://docs.rs/zenoh/latest/zenoh/config/struct.EndPoint.html
+    endpoints: [
+      "tcp/127.0.0.1:7447"
+    ]
+  },
+
+  /// Which endpoints to listen on. E.g. tcp/0.0.0.0:7447.
+  /// By configuring the endpoints, it is possible to tell zenoh which are the endpoints that other routers,
+  /// peers, or client can use to establish a zenoh session.
+  listen: { endpoints: { router: ["tcp/[::]:7449"]} },
+  
+
+  // from template: https://github.com/eclipse-zenoh/zenoh-backend-influxdb
+  plugins: {
+    // configuration of "storage_manager" plugin:
+    storage_manager: {
+      volumes: {
+        // configuration of a "influxdb" volume (the "zenoh_backend_influxdb" backend library will be loaded at startup)
+        //this should be named influxdb for v1 and influxdb2 for v2
+        influxdb2: {
+          // URL to the InfluxDB service. The example below is for plugin v1.x. For plugin 2.x, we need to append /api/v2/ to the url
+          url: "http://localhost:8086",
+          private: {
+            org_id: "ecmpg",
+            token: "_djIO2Eq4Nukcv6iTD9zUzlirSv38f1IWRt85TFifWHtrYOJe8DI4tDr5m9dOiSwL3wPfyYMPoyUN3hDuMdDvw=="
+          }
+        }
+      },
+      storages: {
+        // configuration of a "demo" storage using the "influxdb" volume
+        demo: {
+          // the key expression this storage will subscribes to
+          key_expr: "demo/example/**",
+          // this prefix will be stripped from the received key when converting to database key.
+          // i.e.: "demo/example/a/b" will be stored as "a/b"
+          // this option is optional
+          strip_prefix: "demo/example",
+          volume: {
+            //this will be influxdb for v1 and influxdb2 for v2 (exactly the same name as in volumes section)
+            id: "influxdb2",
+            // the database/bucket name within InfluxDB
+            db: "zenoh_example",
+            // if the database doesn't exist, create it
+            create_db: true,
+            // strategy on storage closure
+            on_closure: "do_nothing",
+            private: {
+              org_id: "ecmpg",
+              token: "_djIO2Eq4Nukcv6iTD9zUzlirSv38f1IWRt85TFifWHtrYOJe8DI4tDr5m9dOiSwL3wPfyYMPoyUN3hDuMdDvw=="
+            }
+          }
+        }
+      }
+    },
+    // Optionally, add the REST plugin
+    rest: { http_port: 8000 }
+  }
+}
