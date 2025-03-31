@@ -31,6 +31,7 @@ Sample Pub Sub of sensor data to InfluxDB and Telegraf stack using Zenoh Python 
     ```sh
     zenohd -c config/zenoh_config.json5
     ```
+<img src="figures/zenohd.png" alt="Running Zenoh router from the Devcontainer terminal" style="width:600px;"/>
 
 5. Setup and activate Python environment on host PC and install Zenoh Python API.
     ```bat
@@ -44,3 +45,5 @@ Sample Pub Sub of sensor data to InfluxDB and Telegraf stack using Zenoh Python 
     python pub_example.py
     ```
 7. View data from InfluxDB by loging into http://localhost:8086/ with username and password contained in ```config\setup_influxdb.sh```.
+
+<img src="figures/python_test.png" alt="Output from running the Python API test script" style="width:600px;"/>
